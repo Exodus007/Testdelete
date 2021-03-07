@@ -31,11 +31,12 @@
   </head>
     <script>
       var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Webgl_Build.json", {onProgress: UnityProgress});
-	  var userName;
-var userEmail;
+	  var userName="Default";
+var userEmail="Default";
 function GoogleAuthFromUnity(str)
 {
-googlAlreadySignedIn(str); 
+	alert("auth");
+//googlAlreadySignedIn(str); 
 }
 function jsToUnity(email)
 { 
