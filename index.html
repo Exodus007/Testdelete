@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Global_True_False_Game</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+	  <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="542758334391-lrvmgubamvndoi8mh9usp13vrrdcimi3.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+ 
+  <body>
+	   <div style="display: none;">
+        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+   </div>
+
+	  
+    <div class="webgl-content">
+      <div id="unityContainer" style="width: 960px; height: 600px"></div>
+      <div class="footer">
+        <div class="webgl-logo"></div>
+        <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+        <div class="title">Global_True_False_Game</div>
+      </div>
+    </div>
+  </body>
+	   
+  </head>
+    <script>
+      var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Webgl_Build.json", {onProgress: UnityProgress});
+	  var userName;
+var userEmail;
+function GoogleAuthFromUnity(str)
+{
+googlAlreadySignedIn(str); 
+}
+function jsToUnity(email)
+{ 
+unityInstance.SendMessage("BridgeToJs","SendToUnity",email); 
+}
+//google authentication Logic
+ function onSignIn(googleUser) {
+        // Useful data for your client-side scripts:
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+        console.log('Full Name: ' + profile.getName());
+        console.log('Given Name: ' + profile.getGivenName());
+        console.log('Family Name: ' + profile.getFamilyName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail());
+    
+    gapi.load('auth2', function() {
+
+  gapi.auth2.init({
+
+    client_id: '542758334391-lrvmgubamvndoi8mh9usp13vrrdcimi3.apps.googleusercontent.com',
+
+  }).then(function(){
+
+    auth2 = gapi.auth2.getAuthInstance();
+    console.log(auth2.isSignedIn.get()); //now this always returns correctly     
+    userName=profile.getName();
+userEmail=profile.getEmail();
+var obj = { Name:userName, Email:userEmail};
+var myJSON = JSON.stringify(obj);
+jsToUnity(myJSON);
+
+  });
+});
+}
+                             
+   
+    function customButtonSignIn()
+      {
+      gapi.auth2.getAuthInstance().signIn().then(function()
+                                                 {googlAlreadySignedIn("a");});;
+      }
+    function googlAlreadySignedIn(checker)
+      {
+          
+         var a=gapi.auth2.getAuthInstance().isSignedIn.get();
+       
+        if(a)
+        {
+gapi.load('auth2', function() {
+
+  gapi.auth2.init({
+
+    client_id: '542758334391-lrvmgubamvndoi8mh9usp13vrrdcimi3.apps.googleusercontent.com',
+
+  }).then(function(){
+
+    auth2 = gapi.auth2.getAuthInstance();
+   var profile = auth2.currentUser.get().getBasicProfile();
+  console.log('ID: ' + profile.getId());
+  console.log('Full Name: ' + profile.getName());
+  console.log('Given Name: ' + profile.getGivenName());
+  console.log('Family Name: ' + profile.getFamilyName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail());
+   userName=profile.getName();
+userEmail=profile.getEmail();
+var obj = { Name:userName, Email:userEmail};
+var myJSON = JSON.stringify(obj);
+jsToUnity(myJSON);
+
+  });
+});
+}else
+{
+if(checker=="start")
+{
+//do nothing
+}else
+{
+if(checker=="manual")
+{
+//try to sign in with google! ...
+alert("checker manual is called!");
+customButtonSignIn();
+}
+}
+
+        }
+      }
+    </script>
+</html>
